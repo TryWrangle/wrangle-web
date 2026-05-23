@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      const path = window.location.pathname;
+      const base = '/wrangle-web';
+      const newPath = path.startsWith(base) ? path : base + path;
+      sessionStorage.setItem('redirect', newPath + window.location.search + window.location.hash);
+      window.location.replace('/wrangle-web/');
+    </script>
+  </head>
+</html>
