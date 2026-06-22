@@ -1,9 +1,8 @@
 /// <reference types="vite/client" />
 
-const API_URL = import.meta.env.VITE_API_URL as string | undefined;
-if (import.meta.env.DEV && !API_URL) {
-  console.error('[wrangle-web] VITE_API_URL is not set — guide previews will not load');
-}
+const API_URL = import.meta.env.DEV
+  ? '/api-proxy'
+  : (import.meta.env.VITE_API_URL as string | undefined);
 
 export type GuideSharePreview = {
   id: string;
@@ -23,11 +22,12 @@ export type PrivateGuidePreview = {
 export type GuideBySlugResult =
   | { kind: 'found'; guide: GuideSharePreview }
   | { kind: 'private'; author: PrivateGuidePreview['author'] }
-  | { kind: 'not_found' };
+  | { kind: 'not_found' }
+  | { kind: 'error' };
 
 export async function fetchGuideBySlug(slug: string): Promise<GuideBySlugResult> {
+  if (!API_URL) return { kind: 'error' };
   try {
-    if (!API_URL) return { kind: 'not_found' };
     const res = await fetch(`${API_URL}/v1/guides/by-slug/${encodeURIComponent(slug)}`);
     if (res.ok) {
       const guide = (await res.json()) as GuideSharePreview;
@@ -37,8 +37,9 @@ export async function fetchGuideBySlug(slug: string): Promise<GuideBySlugResult>
       const data = (await res.json()) as PrivateGuidePreview;
       return { kind: 'private', author: data.author };
     }
-    return { kind: 'not_found' };
+    if (res.status === 404) return { kind: 'not_found' };
+    return { kind: 'error' };
   } catch {
-    return { kind: 'not_found' };
+    return { kind: 'error' };
   }
 }
