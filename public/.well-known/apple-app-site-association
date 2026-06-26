@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appID": "APPLE_TEAM_ID.com.wrangle.mobile",
+        "appID": "8M8JC93K29.com.wrangle.mobile",
         "paths": ["/wrangle-web/g/*", "/g/*"]
       }
     ]
