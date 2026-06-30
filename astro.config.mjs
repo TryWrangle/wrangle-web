@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: process.env.SITE_URL || 'https://getwrangle.app',
+  site: process.env.SITE_URL || 'https://trywrangle.com',
   integrations: [react(), mdx(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
