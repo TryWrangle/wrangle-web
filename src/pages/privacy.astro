@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/layout/Nav.astro';
+import Footer from '../components/layout/Footer.astro';
+---
+
+<BaseLayout title="Privacy Policy — Wrangle" description="How Wrangle collects, uses, and protects your data.">
+  <Nav />
+  <main style="background: var(--navy-900); padding-top: 80px; min-height: 100vh;">
+    <div style="max-width: 720px; margin: 0 auto; padding: 60px 24px 100px;">
+      <h1 style="font-family: 'Sora', sans-serif; font-weight: 800; font-size: 42px; color: white; letter-spacing: -0.03em; margin: 0 0 8px;">Privacy Policy</h1>
+      <p style="font-family: 'Manrope', sans-serif; font-size: 14px; color: rgba(176,196,222,0.5); margin: 0 0 48px;">Last updated: June 2026</p>
+
+      <div class="legal-body">
+        <h2>1. What we collect</h2>
+        <p>When you join our waitlist, we collect your email address. When you use the app, we process your photos' EXIF metadata (GPS coordinates, timestamps, camera model) locally on your device to power curation. We do not store your photos on our servers without your explicit consent.</p>
+
+        <h2>2. How we use it</h2>
+        <p>Your email is used to send you product updates and your invite. We don't sell your data to third parties. Metadata from your photos is used solely to build your guide and is not shared with or sold to any third party.</p>
+
+        <h2>3. Data storage</h2>
+        <p>When you create and publish a guide, the photos you include are stored on our servers to serve the guide link. You can delete any guide at any time from within the app, which removes the photos from our servers within 24 hours.</p>
+
+        <h2>4. Third-party services</h2>
+        <p>We use Loops.so to manage email communications, Mapbox for map display, and Vercel for hosting. Each of these has their own privacy policy that governs their data handling.</p>
+
+        <h2>5. Your rights</h2>
+        <p>You can request deletion of your account and associated data at any time by emailing <a href="mailto:privacy@getwrangle.app" style="color: #FF7A59;">privacy@getwrangle.app</a>. We will process deletion requests within 30 days.</p>
+
+        <h2>6. Cookies</h2>
+        <p>Our website uses Vercel Analytics for privacy-first, cookie-free analytics. We do not use advertising cookies or cross-site tracking.</p>
+
+        <h2>7. Contact</h2>
+        <p>Questions about privacy? Email <a href="mailto:privacy@getwrangle.app" style="color: #FF7A59;">privacy@getwrangle.app</a>.</p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style is:global>
+  .legal-body h2 {
+    font-family: 'Sora', sans-serif; font-weight: 700; font-size: 20px;
+    color: white; margin: 40px 0 12px;
+  }
+  .legal-body p {
+    font-family: 'Manrope', sans-serif; font-size: 16px;
+    color: #B0C4DE; line-height: 1.8; margin: 0 0 20px;
+  }
+</style>

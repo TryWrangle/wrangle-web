@@ -1,0 +1,137 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/layout/Nav.astro';
+import Footer from '../../components/layout/Footer.astro';
+import WaitlistForm from '../../components/ui/WaitlistForm.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const dateStr = post.data.pubDate.toLocaleDateString('en-US', {
+  month: 'long', day: 'numeric', year: 'numeric'
+});
+---
+
+<BaseLayout title={`${post.data.title} — Wrangle`} description={post.data.description}>
+  <Nav />
+
+  <main style="min-height: 100vh; background: var(--navy-900); padding-top: 80px;">
+    <!-- Hero -->
+    <div
+      style="
+        background: linear-gradient(180deg, var(--navy-800) 0%, var(--navy-900) 100%);
+        padding: 60px 24px 48px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      "
+    >
+      <div style="max-width: 720px; margin: 0 auto;">
+        <!-- Tag -->
+        <span style="display: inline-block; background: rgba(255,122,89,0.15); color: #FF7A59; font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 12px; border-radius: 99px; margin-bottom: 20px;">
+          {post.data.tag}
+        </span>
+
+        <!-- Cover emoji -->
+        <div style="font-size: 64px; margin-bottom: 20px; line-height: 1;">{post.data.coverEmoji}</div>
+
+        <!-- Title -->
+        <h1 style="font-family: 'Sora', sans-serif; font-weight: 800; font-size: clamp(28px, 4vw, 42px); color: white; line-height: 1.15; letter-spacing: -0.03em; margin: 0 0 20px;">
+          {post.data.title}
+        </h1>
+
+        <!-- Meta -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #B0C4DE;">{post.data.author}</span>
+          <span style="color: rgba(176,196,222,0.3);">·</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #B0C4DE;">{dateStr}</span>
+          <span style="color: rgba(176,196,222,0.3);">·</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #B0C4DE;">{post.data.readTime}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article body -->
+    <article style="max-width: 680px; margin: 0 auto; padding: 56px 24px 80px;">
+      <div class="prose-wrangle">
+        <Content />
+      </div>
+
+      <!-- Inline CTA -->
+      <div
+        style="
+          margin: 48px 0;
+          background: rgba(255,122,89,0.1);
+          border: 1px solid rgba(255,122,89,0.25);
+          border-radius: 16px;
+          padding: 32px;
+          text-align: center;
+        "
+      >
+        <p style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 20px; color: white; margin: 0 0 8px;">
+          Turn your own trips into guides →
+        </p>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #B0C4DE; margin: 0 0 20px;">
+          Join the Wrangle waitlist and be first to try it.
+        </p>
+        <WaitlistForm id={`blog-cta-${post.slug}`} />
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style is:global>
+  .prose-wrangle h2 {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: white;
+    margin: 48px 0 16px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .prose-wrangle h3 {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: white;
+    margin: 36px 0 12px;
+  }
+  .prose-wrangle p {
+    font-family: 'Manrope', sans-serif;
+    font-size: 17px;
+    color: #B0C4DE;
+    line-height: 1.8;
+    margin: 0 0 24px;
+  }
+  .prose-wrangle ul, .prose-wrangle ol {
+    font-family: 'Manrope', sans-serif;
+    font-size: 17px;
+    color: #B0C4DE;
+    line-height: 1.8;
+    margin: 0 0 24px;
+    padding-left: 24px;
+  }
+  .prose-wrangle li { margin-bottom: 8px; }
+  .prose-wrangle strong { color: white; font-weight: 600; }
+  .prose-wrangle a { color: #FF7A59; text-underline-offset: 3px; }
+  .prose-wrangle blockquote {
+    border-left: 3px solid #FF7A59;
+    padding-left: 20px;
+    margin: 32px 0;
+    font-style: italic;
+    color: rgba(176,196,222,0.8);
+  }
+  .prose-wrangle hr {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin: 40px 0;
+  }
+</style>

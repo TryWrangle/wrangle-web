@@ -1,0 +1,146 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/layout/Nav.astro';
+import Footer from '../components/layout/Footer.astro';
+import WaitlistForm from '../components/ui/WaitlistForm.astro';
+---
+
+<BaseLayout
+  title="About — Wrangle"
+  description="We built Wrangle because we kept losing our best travel memories to a camera roll we'd never revisit."
+>
+  <Nav />
+
+  <main style="background: var(--navy-900); padding-top: 80px;">
+
+    <!-- Mission hero -->
+    <section style="min-height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 80px 24px;">
+      <div style="max-width: 720px; margin: 0 auto;">
+        <p style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #FF7A59; margin-bottom: 20px;">OUR MISSION</p>
+        <h1 style="font-family: 'Sora', sans-serif; font-weight: 800; font-size: clamp(32px, 5vw, 52px); color: white; line-height: 1.15; letter-spacing: -0.03em; margin: 0 0 24px;">
+          We believe your camera roll is the best travel journal ever made.<br/>It just needs a little help.
+        </h1>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 18px; color: #B0C4DE; line-height: 1.7; max-width: 640px; margin: 0 auto;">
+          Wrangle was built by travelers who kept losing their best trip memories to a camera roll they'd never revisit. We set out to fix that — without making it another chore.
+        </p>
+      </div>
+    </section>
+
+    <!-- Story -->
+    <section style="max-width: 1100px; margin: 0 auto; padding: 60px 24px; border-top: 1px solid rgba(255,255,255,0.06);">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
+        <div>
+          <h2 style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 32px; color: white; margin: 0 0 20px;">Why we built it</h2>
+          <p style="font-family: 'Manrope', sans-serif; font-size: 17px; color: #B0C4DE; line-height: 1.8; margin: 0 0 20px;">
+            It started with a Japan trip. Fourteen days, four cities, somewhere north of 1,200 photos. When we got home, everyone asked to see them. We sent a few favorites over iMessage and promised to "put something together."
+          </p>
+          <p style="font-family: 'Manrope', sans-serif; font-size: 17px; color: #B0C4DE; line-height: 1.8; margin: 0 0 20px;">
+            That something never happened. The photos sat in the camera roll, buried under months of subsequent screenshots and memes. Nobody saw the Fushimi Inari shots. Nobody got the ramen recommendations. All that context — gone.
+          </p>
+          <p style="font-family: 'Manrope', sans-serif; font-size: 17px; color: #B0C4DE; line-height: 1.8;">
+            We started asking around and discovered this is nearly universal. People take thousands of travel photos and share almost none of them in any meaningful way. The tools to do it exist — photo apps, maps, note apps — but the friction of assembling them into something shareable is just too high.
+          </p>
+        </div>
+        <!-- Camera roll overflow illustration -->
+        <div style="position: relative; height: 420px; border-radius: 20px; overflow: hidden; background: #080f28; border: 1px solid rgba(255,255,255,0.08);">
+          <!-- Scattered photos -->
+          <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=320&q=80&fit=crop" alt="Fushimi Inari"
+            style="position:absolute;top:18px;left:20px;width:155px;height:115px;object-fit:cover;border-radius:9px;transform:rotate(-5deg);box-shadow:0 8px 24px rgba(0,0,0,0.6);border:2px solid rgba(255,255,255,0.18);" />
+          <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=320&q=80&fit=crop" alt="Ramen"
+            style="position:absolute;top:30px;right:22px;width:140px;height:105px;object-fit:cover;border-radius:9px;transform:rotate(4deg);box-shadow:0 8px 24px rgba(0,0,0,0.6);border:2px solid rgba(255,255,255,0.18);" />
+          <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=320&q=80&fit=crop" alt="Tokyo"
+            style="position:absolute;top:145px;left:55px;width:165px;height:120px;object-fit:cover;border-radius:9px;transform:rotate(2deg);box-shadow:0 8px 24px rgba(0,0,0,0.6);border:2px solid rgba(255,255,255,0.18);" />
+          <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=320&q=80&fit=crop" alt="Arashiyama"
+            style="position:absolute;top:155px;right:18px;width:145px;height:105px;object-fit:cover;border-radius:9px;transform:rotate(-3deg);box-shadow:0 8px 24px rgba(0,0,0,0.6);border:2px solid rgba(255,255,255,0.18);" />
+          <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=320&q=80&fit=crop" alt="Temple"
+            style="position:absolute;top:282px;left:28px;width:135px;height:100px;object-fit:cover;border-radius:9px;transform:rotate(5deg);box-shadow:0 8px 24px rgba(0,0,0,0.6);border:2px solid rgba(255,255,255,0.18);" />
+          <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=320&q=80&fit=crop" alt="City night"
+            style="position:absolute;top:275px;right:30px;width:140px;height:100px;object-fit:cover;border-radius:9px;transform:rotate(-2deg);box-shadow:0 8px 24px rgba(0,0,0,0.6);border:2px solid rgba(255,255,255,0.18);" />
+          <!-- Fade to dark at bottom -->
+          <div style="position:absolute;inset:0;background:linear-gradient(to bottom, transparent 55%, #080f28 100%);pointer-events:none;"></div>
+          <!-- Counter label -->
+          <div style="position:absolute;bottom:20px;left:0;right:0;text-align:center;">
+            <p style="font-family:'Sora',sans-serif;font-weight:700;font-size:22px;color:white;margin:0;letter-spacing:-0.02em;">1,247 photos.</p>
+            <p style="font-family:'Manrope',sans-serif;font-size:13px;color:rgba(176,196,222,0.6);margin:4px 0 0;">Still sitting in camera roll.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team -->
+    <section style="max-width: 1100px; margin: 0 auto; padding: 60px 24px; border-top: 1px solid rgba(255,255,255,0.06);">
+      <h2 style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 36px; color: white; margin: 0 0 40px; text-align: center;">The team</h2>
+      <div style="display: flex; justify-content: center;">
+        <div style="background: var(--navy-700); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 32px 40px; text-align: center; max-width: 280px;">
+          <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; margin: 0 auto 16px; border: 2px solid rgba(255,255,255,0.15);">
+            <img src="/emily-tung.jpg" alt="Emily Tung" style="width:100%;height:100%;object-fit:cover;display:block;" />
+          </div>
+          <p style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 16px; color: white; margin: 0 0 4px;">Emily Tung</p>
+          <p style="font-family: 'Manrope', sans-serif; font-weight: 500; font-size: 13px; color: #FF7A59; margin: 0 0 10px;">Founder & CEO</p>
+          <p style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #B0C4DE; line-height: 1.5; margin: 0 0 14px;">Traveler. Builder. Believes the best photo app is the one in your pocket.</p>
+          <a href="https://www.linkedin.com/in/temilytung/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 6px; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: #B0C4DE; text-decoration: none; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Traction stats -->
+    <section style="max-width: 1100px; margin: 0 auto; padding: 60px 24px; border-top: 1px solid rgba(255,255,255,0.06);">
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+        {[
+          { number: '2,400+', label: 'Travelers on the waitlist' },
+          { number: '14', label: 'Countries represented' },
+          { number: '< 10min', label: 'From camera roll to guide' },
+        ].map(stat => (
+          <div style="background: var(--navy-700); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 40px 32px; text-align: center;">
+            <p style="font-family: 'Sora', sans-serif; font-weight: 800; font-size: 56px; color: #FF7A59; line-height: 1; margin: 0 0 12px;">{stat.number}</p>
+            <p style="font-family: 'Manrope', sans-serif; font-weight: 500; font-size: 15px; color: #B0C4DE; margin: 0;">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Press logos placeholder -->
+    <section style="max-width: 1100px; margin: 0 auto; padding: 60px 24px; border-top: 1px solid rgba(255,255,255,0.06);">
+      <p style="font-family: 'Manrope', sans-serif; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(176,196,222,0.5); text-align: center; margin-bottom: 32px;">As seen in</p>
+      <div style="display: flex; justify-content: center; align-items: center; gap: 48px; flex-wrap: wrap;">
+        {['TechCrunch', 'Product Hunt', 'The Verge', 'Condé Nast Traveler'].map(pub => (
+          <span style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 16px; color: rgba(176,196,222,0.35); letter-spacing: -0.02em; transition: color 0.3s;"
+            onmouseover="this.style.color='rgba(176,196,222,0.8)'"
+            onmouseout="this.style.color='rgba(176,196,222,0.35)'"
+          >{pub}</span>
+        ))}
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section style="max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; border-top: 1px solid rgba(255,255,255,0.06);">
+      <h2 style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 28px; color: white; margin: 0 0 24px;">Get in touch</h2>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <p style="font-family: 'Manrope', sans-serif; font-size: 16px; color: #B0C4DE; margin: 0;">
+          Press inquiries: <a href="mailto:press@getwrangle.app" style="color: #FF7A59;">press@getwrangle.app</a>
+        </p>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 16px; color: #B0C4DE; margin: 0;">
+          Investor relations: <a href="mailto:invest@getwrangle.app" style="color: #FF7A59;">invest@getwrangle.app</a>
+        </p>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 14px; color: rgba(176,196,222,0.5); margin: 8px 0 0;">We respond within 24 hours.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  @media (max-width: 768px) {
+    section > div[style*="grid-template-columns: 1fr 1fr"] {
+      grid-template-columns: 1fr !important;
+    }
+    section > div[style*="grid-template-columns: repeat(3"] {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>

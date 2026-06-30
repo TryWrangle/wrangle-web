@@ -1,0 +1,29 @@
+---
+// Static shell — React reads the actual slug from window.location at runtime.
+// GitHub Pages 404.html redirects /g/kyoto-trip → /g/kyoto-trip (served from this file).
+// We pre-render one copy per known slug; unknown slugs fall back via 404.html redirect.
+// Since all content is fetched client-side, any static slug value works as the shell.
+export function getStaticPaths() {
+  // Return a wildcard stub so Astro knows the route exists.
+  // The real slug is read from window.location inside GuideViewerShell.
+  return [{ params: { slug: '_' } }];
+}
+
+import GuideViewerShell from '../../components/ui/GuideViewerShell';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Travel Guide — Wrangle</title>
+    <meta name="description" content="A travel guide made with Wrangle." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>*, *::before, *::after { box-sizing: border-box; } body { margin: 0; background: #0E1B42; }</style>
+  </head>
+  <body>
+    <GuideViewerShell client:only="react" />
+  </body>
+</html>

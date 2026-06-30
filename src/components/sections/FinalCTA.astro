@@ -1,0 +1,75 @@
+---
+import WaitlistForm from '../ui/WaitlistForm.astro';
+import BlobBackground from '../ui/BlobBackground.astro';
+
+const waitlistCount = import.meta.env.PUBLIC_WAITLIST_COUNT || '2,400';
+---
+
+<section
+  id="final-cta"
+  class="relative overflow-hidden py-24 md:py-32 text-center"
+  style="background: #FF7A59;"
+>
+  <BlobBackground variant="coral" />
+  <div class="max-w-3xl mx-auto px-6" style="position: relative; z-index: 1;">
+    <h2
+      class="font-display font-black"
+      style="
+        font-size: clamp(28px, 5vw, 56px);
+        color: #1A2A6C;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+        text-transform: uppercase;
+      "
+    >
+      STOP losing your travel memories to the camera roll.
+    </h2>
+
+    <p
+      class="font-body mt-5"
+      style="font-size: 18px; color: #2D4A8C; max-width: 520px; margin-left: auto; margin-right: auto;"
+    >
+      Join the waitlist. Be first to turn your photos into guides your friends will actually use.
+    </p>
+
+    <div class="mt-10 flex justify-center">
+      <WaitlistForm id="final-waitlist" variant="coral" />
+    </div>
+
+    <p class="font-body font-medium text-sm mt-5" style="color: #1A2A6C;">
+      🔥 {waitlistCount} travelers already waiting
+    </p>
+
+    <!-- App badges (coming soon) -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10 opacity-60">
+      <div
+        style="
+          border: 2px solid #1A2A6C; border-radius: 12px;
+          padding: 10px 20px;
+          display: flex; align-items: center; gap-8px; gap: 8px;
+          color: #1A2A6C;
+        "
+      >
+        <span style="font-size: 20px;"></span>
+        <div class="text-left">
+          <p class="font-body text-xs" style="color: #1A2A6C; opacity: 0.7;">Coming to</p>
+          <p class="font-display font-bold text-sm" style="color: #1A2A6C;">App Store</p>
+        </div>
+      </div>
+      <div
+        style="
+          border: 2px solid #1A2A6C; border-radius: 12px;
+          padding: 10px 20px;
+          display: flex; align-items: center; gap: 8px;
+          color: #1A2A6C;
+        "
+      >
+        <span style="font-size: 20px;">▶</span>
+        <div class="text-left">
+          <p class="font-body text-xs" style="color: #1A2A6C; opacity: 0.7;">Coming to</p>
+          <p class="font-display font-bold text-sm" style="color: #1A2A6C;">Play Store</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

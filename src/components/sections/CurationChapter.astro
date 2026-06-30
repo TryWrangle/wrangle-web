@@ -1,0 +1,364 @@
+---
+// 36 grid photos — seeds 0-11 = travel (highlighted), 12-35 = noise (dimmed after scan)
+const GRID = Array.from({ length: 36 }, (_, i) => ({
+  id: i,
+  src: `https://picsum.photos/seed/wg${i}/112/112`,
+  travel: i < 12,
+  rotate: ((i * 7) % 5) - 2,
+}));
+---
+
+<section id="curation-chapter" style="height: 300vh; position: relative; overflow: hidden;">
+  <div id="curation-sticky" style="position: sticky; top: 0; height: 100vh; overflow: hidden;">
+    <div id="curation-track" style="display: flex; width: 300vw; height: 100vh;">
+
+      <!-- ── Panel 1: Before ── -->
+      <div class="panel" style="
+        width: 100vw; height: 100vh; background: var(--navy-900);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        padding: 48px 40px 80px; flex-shrink: 0;
+      ">
+        <h2 style="font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(20px,2.5vw,32px);color:white;margin:0 0 32px;text-align:center;">
+          Your entire camera roll.
+        </h2>
+        <div style="display:grid;grid-template-columns:repeat(6,56px);gap:6px;">
+          {GRID.map(p => (
+            <div
+              class={`photo-thumb thumb-${p.id}`}
+              style={`
+                width:56px;height:56px;border-radius:6px;overflow:hidden;
+                transform:rotate(${p.rotate}deg);
+                border:1px solid rgba(255,255,255,0.05);
+              `}
+            >
+              <img src={p.src} alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" />
+            </div>
+          ))}
+        </div>
+        <p class="font-body text-steel text-center mt-8 max-w-md" style="font-size:15px;">
+          Every brunch, every blurry sunset, every accidental selfie.
+        </p>
+      </div>
+
+      <!-- ── Panel 2: Scan ── -->
+      <div class="panel" style="
+        width: 100vw; height: 100vh; background: var(--navy-900);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        padding: 48px 40px 80px; flex-shrink: 0; position: relative; overflow: hidden;
+      ">
+        <h2 style="font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(20px,2.5vw,32px);color:white;margin:0 0 32px;text-align:center;">
+          Wrangle scans for travel moments.
+        </h2>
+        <div id="scan-grid" style="position:relative;display:grid;grid-template-columns:repeat(6,56px);gap:6px;">
+          {GRID.map(p => (
+            <div
+              class={`scan-cell ${p.travel ? 'scan-travel' : 'scan-noise'}`}
+              style={`
+                width:56px;height:56px;border-radius:6px;overflow:hidden;
+                transform:rotate(${p.rotate}deg);
+                border:1px solid rgba(255,255,255,0.05);
+                transition:all 0.4s ease;
+              `}
+            >
+              <img src={p.src} alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" />
+            </div>
+          ))}
+          <!-- Scan line -->
+          <div id="scan-line" style="
+            position:absolute;left:-4px;right:-4px;height:2px;top:0;
+            background:linear-gradient(to right, transparent, #FF7A59, transparent);
+            box-shadow:0 0 20px #FF7A59,0 0 40px rgba(255,122,89,0.4);
+          "></div>
+        </div>
+        <p class="font-body text-steel text-center mt-8 max-w-md" style="font-size:15px;">
+          In seconds.
+        </p>
+      </div>
+
+      <!-- ── Panel 3: Tinder Swipe ── -->
+      <div class="panel" style="
+        width: 100vw; height: 100vh; background: var(--navy-900);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        padding: 48px 40px 80px; flex-shrink: 0; position: relative;
+      ">
+        <h2 style="font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(20px,2.5vw,32px);color:white;margin:0 0 32px;text-align:center;">
+          You confirm with a swipe.
+        </h2>
+
+        <!-- Swipe stage — labels live inside so they position over the front card -->
+        <div id="swipe-stage" style="position:relative;width:280px;height:390px;">
+          <!-- Cards rendered by JS -->
+          <!-- KEEP badge (top-left of card, angled) -->
+          <div id="swipe-keep-label" style="
+            position:absolute;top:22px;left:18px;z-index:30;
+            background:#22c55e;color:white;font-family:'Sora',sans-serif;
+            font-weight:800;font-size:20px;letter-spacing:0.06em;
+            border-radius:8px;padding:5px 14px;border:3px solid #16a34a;
+            transform:rotate(-10deg);opacity:0;pointer-events:none;
+          ">✓ KEEP</div>
+          <!-- SKIP badge (top-right of card, angled) -->
+          <div id="swipe-skip-label" style="
+            position:absolute;top:22px;right:18px;z-index:30;
+            background:#ef4444;color:white;font-family:'Sora',sans-serif;
+            font-weight:800;font-size:20px;letter-spacing:0.06em;
+            border-radius:8px;padding:5px 14px;border:3px solid #dc2626;
+            transform:rotate(10deg);opacity:0;pointer-events:none;
+          ">✗ SKIP</div>
+          <!-- Swipe hand hint -->
+          <div id="swipe-hint" style="
+            position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+            z-index:30;font-size:28px;opacity:0;pointer-events:none;
+          ">👆</div>
+        </div>
+
+        <!-- Kept counter (visible during swipes) -->
+        <div id="swipe-counter-row" style="display:flex;align-items:center;gap:10px;margin-top:28px;">
+          <span id="kept-counter" style="font-family:'Sora',sans-serif;font-weight:800;font-size:36px;color:#FF7A59;">0</span>
+          <span style="font-family:'Manrope',sans-serif;font-size:14px;color:#B0C4DE;">travel photos kept</span>
+        </div>
+        <p id="swipe-caption" class="font-body text-steel text-center mt-4 max-w-md" style="font-size:15px;">
+          No typing. No tagging. Just swipe to confirm.
+        </p>
+
+        <!-- Guide result card — shown after all swipes complete -->
+        <div id="swipe-result" style="opacity:0;position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;pointer-events:none;">
+          <!-- App-style guide card -->
+          <div style="
+            width:280px;height:390px;border-radius:20px;overflow:hidden;position:relative;
+            background:linear-gradient(rgba(0,0,0,0.18),rgba(0,0,0,0.18)),url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=560&h=780&fit=crop') center/cover;
+            box-shadow:0 24px 64px rgba(0,0,0,0.7);
+          ">
+            <!-- Wrangle badge top-left -->
+            <div style="position:absolute;top:12px;left:12px;z-index:3;width:28px;height:28px;background:white;border-radius:7px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+              <img src="/logo-w-blue.png" alt="W" style="width:21px;height:21px;object-fit:contain;" />
+            </div>
+            <!-- Thumbnail strip top-right -->
+            <div style="position:absolute;top:12px;right:12px;z-index:3;display:flex;flex-direction:column;gap:4px;">
+              <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=80&h=80&fit=crop" alt="" style="width:36px;height:36px;border-radius:7px;object-fit:cover;border:1.5px solid rgba(255,255,255,0.4);" />
+              <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=80&h=80&fit=crop" alt="" style="width:36px;height:36px;border-radius:7px;object-fit:cover;border:1.5px solid rgba(255,255,255,0.4);" />
+              <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=80&h=80&fit=crop" alt="" style="width:36px;height:36px;border-radius:7px;object-fit:cover;border:1.5px solid rgba(255,255,255,0.4);" />
+              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=80&h=80&fit=crop" alt="" style="width:36px;height:36px;border-radius:7px;object-fit:cover;border:1.5px solid rgba(255,255,255,0.4);" />
+            </div>
+            <!-- +count badge -->
+            <div style="position:absolute;bottom:52px;right:12px;z-index:3;font-family:'Manrope',sans-serif;font-size:10px;font-weight:700;color:white;background:rgba(0,0,0,0.6);border-radius:5px;padding:2px 6px;">+5</div>
+            <!-- Bottom info -->
+            <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.9));padding:28px 14px 14px;z-index:2;">
+              <p style="font-family:'Sora',sans-serif;font-weight:800;font-size:22px;color:white;margin:0;letter-spacing:-0.02em;">Your Travel Guide</p>
+              <p style="font-family:'Manrope',sans-serif;font-size:11px;color:rgba(255,255,255,0.55);margin:3px 0 0;">5 locations · ready to share</p>
+              <div style="display:flex;align-items:center;gap:5px;margin-top:8px;">
+                <div style="width:14px;height:14px;background:white;border-radius:3px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                  <img src="/logo-w-blue.png" alt="W" style="width:11px;height:11px;object-fit:contain;" />
+                </div>
+                <span style="font-family:'Manrope',sans-serif;font-size:11px;color:rgba(255,255,255,0.6);">By Wrangle</span>
+              </div>
+            </div>
+          </div>
+          <p style="font-family:'Sora',sans-serif;font-weight:700;font-size:16px;color:white;margin:0;">Your guide is ready. ✨</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .scan-noise.dimmed {
+    filter: saturate(0) brightness(0.3);
+    opacity: 0.25;
+  }
+  .scan-travel.lit {
+    box-shadow: 0 0 0 2px #FF7A59;
+    filter: brightness(1.1);
+    transform: rotate(0deg) scale(1.05) !important;
+  }
+  .swipe-card {
+    position: absolute; inset: 0;
+    border-radius: 18px; overflow: hidden;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.6);
+    transform-origin: bottom center;
+  }
+  .swipe-card img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .swipe-card .card-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+    padding: 32px 16px 14px;
+    font-family: 'Sora', sans-serif; font-weight: 700; font-size: 15px;
+    color: white; letter-spacing: -0.01em;
+  }
+</style>
+
+<script>
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    (async () => {
+      const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+        import('gsap'),
+        import('gsap/ScrollTrigger'),
+      ]);
+      gsap.registerPlugin(ScrollTrigger);
+
+      // ── Horizontal scroll ─────────────────────────────────────────────────
+      gsap.to('#curation-track', {
+        x: '-200vw',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#curation-chapter',
+          pin: '#curation-sticky',
+          scrub: 1,
+          start: 'top top',
+          end: '+=200%',
+        },
+      });
+
+      // ── Panel 2: Scan ─────────────────────────────────────────────────────
+      ScrollTrigger.create({
+        trigger: '#curation-chapter',
+        start: '33% top',
+        onEnter: () => {
+          const grid = document.getElementById('scan-grid');
+          const scanLine = document.getElementById('scan-line');
+          if (!grid || !scanLine) return;
+          gsap.to(scanLine, {
+            top: grid.offsetHeight,
+            duration: 1.2, ease: 'none',
+            onComplete: () => {
+              document.querySelectorAll<HTMLElement>('.scan-noise').forEach(el => el.classList.add('dimmed'));
+              document.querySelectorAll<HTMLElement>('.scan-travel').forEach(el => el.classList.add('lit'));
+            },
+          });
+        },
+      });
+
+      // ── Panel 3: Tinder swipe ─────────────────────────────────────────────
+      const CARDS = [
+        { src: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=480&h=640&fit=crop', label: 'Fushimi Inari, Kyoto', keep: true },
+        { src: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=480&h=640&fit=crop', label: 'Eiffel Tower, Paris', keep: true },
+        { src: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=480&h=640&fit=crop', label: 'Sunday Brunch', keep: false },
+        { src: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=480&h=640&fit=crop', label: 'Tanah Lot, Bali', keep: true },
+        { src: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=480&h=640&fit=crop', label: 'Brooklyn Bridge, NYC', keep: true },
+        { src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=480&h=640&fit=crop', label: 'Kuta Beach, Bali', keep: true },
+      ];
+
+      const stage = document.getElementById('swipe-stage')!;
+      const keepLabel = document.getElementById('swipe-keep-label')!;
+      const skipLabel = document.getElementById('swipe-skip-label')!;
+      const counterEl = document.getElementById('kept-counter')!;
+      let keptCount = 0;
+
+      const hintEl = document.getElementById('swipe-hint')!;
+
+      // Preload images so cards render immediately
+      CARDS.forEach(c => { const img = new Image(); img.src = c.src; });
+
+      // Build card stack — append back-to-front so front card is highest in DOM
+      const cardEls: HTMLElement[] = [];
+      [...CARDS].reverse().forEach((c, ri) => {
+        const i = CARDS.length - 1 - ri;
+        const el = document.createElement('div');
+        el.className = 'swipe-card';
+        el.style.cssText = 'position:absolute;inset:0;border-radius:18px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,0.6);transform-origin:bottom center;';
+        el.innerHTML = `
+          <img src="${c.src}" alt="" loading="eager" style="width:100%;height:100%;object-fit:cover;display:block;" />
+          <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.85));padding:32px 16px 14px;font-family:'Sora',sans-serif;font-weight:700;font-size:15px;color:white;">${c.label}</div>`;
+        // Insert before the labels so labels stay on top
+        stage.insertBefore(el, stage.firstChild);
+        cardEls[i] = el;
+
+        const depth = i; // 0=front, 5=back
+        gsap.set(el, {
+          scale: 1 - depth * 0.06,
+          y: depth * 14,
+          rotation: (depth % 2 === 0 ? -1 : 1) * depth * 2,
+          zIndex: CARDS.length - depth,
+          opacity: depth < 3 ? 1 : 0,
+          x: 0,
+        });
+      });
+
+      let current = 0;
+      let animating = false;
+
+      function promoteStack() {
+        // Start at `current` (the new front) — not current+1
+        for (let i = current; i < CARDS.length; i++) {
+          const depth = i - current; // 0 = new front, 1 = behind, etc.
+          gsap.to(cardEls[i], {
+            x: 0,  // reset any residual horizontal offset
+            scale: 1 - depth * 0.06,
+            y: depth * 14,
+            rotation: (depth % 2 === 0 ? -1 : 1) * depth * 2,
+            opacity: depth < 3 ? 1 : 0,
+            duration: 0.4, ease: 'back.out(1.2)',
+          });
+        }
+      }
+
+      function swipeNext() {
+        if (current >= CARDS.length || animating) return;
+        animating = true;
+        gsap.set(hintEl, { opacity: 0 });
+
+        const card = CARDS[current];
+        const el = cardEls[current];
+        const dir = card.keep ? 1 : -1;
+        const label = card.keep ? keepLabel : skipLabel;
+
+        // Label fades in as card starts moving
+        gsap.to(label, { opacity: 1, duration: 0.2 });
+
+        // Slight pre-tilt toward direction, then fly off
+        gsap.to(el, {
+          x: dir * 560,
+          rotation: dir * 25,
+          opacity: 0,
+          duration: 0.55,
+          ease: 'power2.in',
+          onComplete: () => {
+            if (card.keep) {
+              keptCount++;
+              counterEl.textContent = String(keptCount);
+              gsap.from(counterEl, { scale: 1.5, duration: 0.3, ease: 'back.out(2)' });
+            }
+            gsap.to(label, { opacity: 0, duration: 0.25 });
+            current++;
+            promoteStack();
+            animating = false;
+            // All done — show the guide result card
+            if (current >= CARDS.length) {
+              const resultEl = document.getElementById('swipe-result')!;
+              const counterRow = document.getElementById('swipe-counter-row')!;
+              const caption = document.getElementById('swipe-caption')!;
+              resultEl.style.pointerEvents = 'auto';
+              gsap.to([counterRow, caption], { opacity: 0, duration: 0.3 });
+              gsap.to(resultEl, { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.4 });
+              gsap.from(resultEl.querySelector('div'), { scale: 0.88, y: 20, duration: 0.7, ease: 'back.out(1.4)', delay: 0.4 });
+            }
+          },
+        });
+      }
+
+      // Auto-play when panel 3 is in view
+      ScrollTrigger.create({
+        trigger: '#curation-chapter',
+        start: '66% top',
+        onEnter: () => {
+          // Hand hint: nudge right then back to signal swipability
+          gsap.timeline()
+            .to(hintEl, { opacity: 1, duration: 0.3 })
+            .to(hintEl, { x: 30, duration: 0.4, ease: 'power1.inOut' })
+            .to(hintEl, { x: 0, duration: 0.3, ease: 'power1.inOut' })
+            .to(hintEl, { opacity: 0, duration: 0.3 });
+
+          // Cards swipe at a pace the user can actually see
+          let delay = 1.8; // first card after hand hint
+          CARDS.forEach(() => {
+            gsap.delayedCall(delay, swipeNext);
+            delay += 1.6;
+          });
+        },
+      });
+
+    })();
+  }
+</script>

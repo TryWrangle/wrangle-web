@@ -1,0 +1,98 @@
+---
+interface Props {
+  variant?: 'dark' | 'coral';
+  id?: string;
+}
+const { variant = 'dark', id = 'waitlist-form' } = Astro.props;
+
+const inputClass = variant === 'coral'
+  ? 'bg-navy-800/30 border border-navy-800 text-white placeholder:text-navy-700'
+  : 'bg-white/10 border border-white/20 text-white placeholder:text-steel';
+
+const btnClass = variant === 'coral'
+  ? 'bg-navy-800 text-white hover:bg-navy-900'
+  : 'bg-coral text-white hover:opacity-90';
+---
+
+<div class="waitlist-wrapper" data-id={id}>
+  <form class="waitlist-form flex flex-col sm:flex-row gap-3 w-full max-w-lg">
+    <input
+      type="email"
+      name="email"
+      placeholder="your@email.com"
+      required
+      class={`flex-1 font-body text-base px-4 py-3 rounded-lg focus:outline-none focus:border-coral transition-colors ${inputClass}`}
+    />
+    <button
+      type="submit"
+      class={`btn-magnetic font-display font-semibold text-sm px-6 py-3 rounded-lg transition-all whitespace-nowrap ${btnClass}`}
+    >
+      <span class="btn-text">Join the waitlist →</span>
+      <span class="btn-spinner hidden">
+        <svg class="animate-spin w-4 h-4 inline" viewBox="0 0 24 24" fill="none">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+        </svg>
+      </span>
+    </button>
+  </form>
+  <p class="waitlist-success hidden font-body font-medium text-base text-white flex items-center gap-2 mt-2">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#FF7A59"/><path d="M6 10l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    You're on the list. We'll email you first.
+  </p>
+  <p class="waitlist-error hidden font-body text-sm text-coral mt-2"></p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.waitlist-wrapper').forEach((wrapper) => {
+    const form = wrapper.querySelector<HTMLFormElement>('.waitlist-form')!;
+    const success = wrapper.querySelector<HTMLElement>('.waitlist-success')!;
+    const error = wrapper.querySelector<HTMLElement>('.waitlist-error')!;
+    const btnText = form.querySelector<HTMLElement>('.btn-text')!;
+    const btnSpinner = form.querySelector<HTMLElement>('.btn-spinner')!;
+    const btn = form.querySelector('button')!;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = (form.querySelector('input[name="email"]') as HTMLInputElement).value;
+
+      btnText.classList.add('hidden');
+      btnSpinner.classList.remove('hidden');
+      btn.disabled = true;
+
+      const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
+      const endpoint = formspreeId
+        ? `https://formspree.io/f/${formspreeId}`
+        : '/api/waitlist';
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            email,
+            _subject: `New Wrangle waitlist signup: ${email}`,
+          }),
+        });
+
+        if (res.ok) {
+          form.classList.add('hidden');
+          success.classList.remove('hidden');
+        } else {
+          const data = await res.json().catch(() => ({}));
+          error.textContent = (data as any).error || 'Something went wrong. Try again.';
+          error.classList.remove('hidden');
+          btnText.classList.remove('hidden');
+          btnSpinner.classList.add('hidden');
+          btn.disabled = false;
+        }
+      } catch {
+        error.textContent = 'Network error. Please try again.';
+        error.classList.remove('hidden');
+        btnText.classList.remove('hidden');
+        btnSpinner.classList.add('hidden');
+        btn.disabled = false;
+      }
+    });
+  });
+</script>

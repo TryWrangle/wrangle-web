@@ -1,0 +1,360 @@
+---
+---
+
+<section id="map-chapter" style="height: 200vh; position: relative;">
+  <div
+    id="map-container"
+    style="position: sticky; top: 0; width: 100%; height: 100vh; overflow: hidden;"
+  >
+    <div id="map" style="position: absolute; inset: 0; background: #07101e; z-index: 0;"></div>
+
+    <!-- Left gradient so copy is always readable over tiles -->
+    <div style="
+      position: absolute; inset: 0; pointer-events: none; z-index: 5;
+      background: linear-gradient(to right, rgba(9,17,50,0.97) 0%, rgba(9,17,50,0.85) 30%, rgba(9,17,50,0.3) 52%, transparent 68%);
+    "></div>
+
+    <!-- Copy panel -->
+    <div id="map-copy" style="
+      position: absolute; z-index: 10;
+      left: 0; top: 0; bottom: 0;
+      width: min(44vw, 500px);
+      padding-left: clamp(24px, 5vw, 80px);
+      padding-right: 32px;
+      display: flex; flex-direction: column; justify-content: center;
+    ">
+      <p id="map-city-label" style="
+        font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 11px;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        color: #FF7A59; margin: 0 0 12px;
+      "></p>
+      <h2 style="
+        font-family: 'Sora', sans-serif; font-weight: 800; color: white;
+        font-size: clamp(26px, 3.2vw, 38px); line-height: 1.15; margin: 0;
+      ">
+        Your photos already know where you've been.
+      </h2>
+      <p style="font-family: 'Manrope', sans-serif; color: #B0C4DE; margin: 14px 0 0; font-size: 16px; max-width: 360px; line-height: 1.6;">
+        We connect the dots across your camera roll.
+      </p>
+
+      <div style="display: flex; align-items: baseline; gap: 12px; margin-top: 36px;">
+        <span id="map-scan-count" style="
+          font-family: 'Sora', sans-serif; font-weight: 800; color: #B0C4DE;
+          font-size: clamp(40px, 5.5vw, 72px); font-variant-numeric: tabular-nums;
+        ">847</span>
+        <span style="font-family: 'Manrope', sans-serif; font-weight: 500; color: #B0C4DE; font-size: 13px;">scanned →</span>
+        <span id="map-counter" style="
+          font-family: 'Sora', sans-serif; font-weight: 800; color: #FF7A59;
+          font-size: clamp(40px, 5.5vw, 72px); font-variant-numeric: tabular-nums;
+        ">0</span>
+      </div>
+      <p style="font-family: 'Manrope', sans-serif; font-size: 12px; color: rgba(176,196,222,0.45); margin: 4px 0 0;">photos that matter</p>
+
+      <div id="location-chips" style="display: flex; flex-wrap: wrap; gap: 7px; margin-top: 20px; opacity: 0;"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes map-pulse {
+    0%   { transform: scale(1);   opacity: 0.65; }
+    70%  { transform: scale(2.6); opacity: 0; }
+    100% { transform: scale(2.6); opacity: 0; }
+  }
+  .pin-pulse {
+    position: absolute; inset: -4px; border-radius: 50%;
+    border: 2px solid #FF7A59;
+    animation: map-pulse 2.2s ease-out infinite;
+    pointer-events: none;
+  }
+  .pin-pulse-2 { animation-delay: 0.8s; }
+  @keyframes dash-travel { to { stroke-dashoffset: -20; } }
+  .leaflet-overlay-pane path.animated-route {
+    animation: dash-travel 0.45s linear infinite;
+  }
+</style>
+
+<script>
+  const mapSection = document.getElementById('map-chapter');
+  if (!mapSection) throw new Error('map-chapter not found');
+
+  // ── City collection ──────────────────────────────────────────────────────────
+  const CITIES = [
+    {
+      name: 'Kyoto, Japan', center: [35.007, 135.741] as [number,number], zoom: 12,
+      photo: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=80&q=80&fit=crop',
+      scanned: 847, kept: 52,
+      spots: [
+        { lat: 35.0394, lng: 135.7292, icon: '🏯', label: 'Kinkaku-ji' },
+        { lat: 35.0273, lng: 135.7937, icon: '🌲', label: "Philosopher's Path" },
+        { lat: 35.0141, lng: 135.7481, icon: '🏰', label: 'Nijo Castle' },
+        { lat: 35.0094, lng: 135.6721, icon: '🎋', label: 'Arashiyama' },
+        { lat: 35.0035, lng: 135.7755, icon: '🍜', label: 'Gion' },
+        { lat: 34.9948, lng: 135.7850, icon: '🌅', label: 'Kiyomizu-dera' },
+        { lat: 34.9671, lng: 135.7727, icon: '⛩️', label: 'Fushimi Inari' },
+      ],
+    },
+    {
+      name: 'Paris, France', center: [48.862, 2.316] as [number,number], zoom: 13,
+      photo: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=80&q=80&fit=crop',
+      scanned: 1204, kept: 67,
+      spots: [
+        { lat: 48.8584, lng: 2.2945, icon: '🗼', label: 'Eiffel Tower' },
+        { lat: 48.8606, lng: 2.3376, icon: '🎨', label: 'The Louvre' },
+        { lat: 48.8867, lng: 2.3431, icon: '⛪', label: 'Sacré-Cœur' },
+        { lat: 48.8600, lng: 2.3266, icon: '🖼️', label: "Musée d'Orsay" },
+        { lat: 48.8698, lng: 2.3078, icon: '🌟', label: 'Champs-Élysées' },
+        { lat: 48.8739, lng: 2.2950, icon: '🏛️', label: 'Arc de Triomphe' },
+      ],
+    },
+    {
+      name: 'Rome, Italy', center: [41.897, 12.476] as [number,number], zoom: 14,
+      photo: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=80&q=80&fit=crop',
+      scanned: 923, kept: 44,
+      spots: [
+        { lat: 41.8902, lng: 12.4922, icon: '🏟️', label: 'Colosseum' },
+        { lat: 41.9029, lng: 12.4534, icon: '⛪', label: 'Vatican' },
+        { lat: 41.9009, lng: 12.4833, icon: '⛲', label: 'Trevi Fountain' },
+        { lat: 41.8986, lng: 12.4769, icon: '🏛️', label: 'Pantheon' },
+        { lat: 41.9058, lng: 12.4833, icon: '🌿', label: 'Spanish Steps' },
+        { lat: 41.8990, lng: 12.4730, icon: '🍕', label: 'Piazza Navona' },
+      ],
+    },
+    {
+      name: 'Tokyo, Japan', center: [35.682, 139.745] as [number,number], zoom: 13,
+      photo: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=80&q=80&fit=crop',
+      scanned: 1567, kept: 89,
+      spots: [
+        { lat: 35.7148, lng: 139.7967, icon: '🕌', label: 'Senso-ji Temple' },
+        { lat: 35.6586, lng: 139.7454, icon: '🗼', label: 'Tokyo Tower' },
+        { lat: 35.6595, lng: 139.7004, icon: '🚶', label: 'Shibuya Crossing' },
+        { lat: 35.6897, lng: 139.6922, icon: '🌸', label: 'Shinjuku Gyoen' },
+        { lat: 35.7167, lng: 139.7745, icon: '🎮', label: 'Akihabara' },
+        { lat: 35.6702, lng: 139.7027, icon: '👘', label: 'Harajuku' },
+      ],
+    },
+    {
+      name: 'New York, USA', center: [40.730, -73.990] as [number,number], zoom: 13,
+      photo: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=80&q=80&fit=crop',
+      scanned: 2103, kept: 118,
+      spots: [
+        { lat: 40.7484, lng: -73.9856, icon: '🏙️', label: 'Empire State' },
+        { lat: 40.7580, lng: -73.9855, icon: '🎭', label: 'Times Square' },
+        { lat: 40.7851, lng: -73.9683, icon: '🌳', label: 'Central Park' },
+        { lat: 40.7061, lng: -73.9969, icon: '🌉', label: 'Brooklyn Bridge' },
+        { lat: 40.7128, lng: -74.0134, icon: '🗽', label: 'One World Trade' },
+        { lat: 40.7480, lng: -74.0048, icon: '🏃', label: 'The High Line' },
+      ],
+    },
+    {
+      name: 'Bali, Indonesia', center: [-8.620, 115.173] as [number,number], zoom: 12,
+      photo: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=80&q=80&fit=crop',
+      scanned: 788, kept: 51,
+      spots: [
+        { lat: -8.5069, lng: 115.2625, icon: '🌿', label: 'Ubud' },
+        { lat: -8.6213, lng: 115.0868, icon: '🌊', label: 'Tanah Lot' },
+        { lat: -8.8291, lng: 115.0849, icon: '🌅', label: 'Uluwatu Temple' },
+        { lat: -8.4313, lng: 115.2791, icon: '🌾', label: 'Tegallalang' },
+        { lat: -8.7194, lng: 115.1686, icon: '🏖️', label: 'Kuta Beach' },
+        { lat: -8.6705, lng: 115.2126, icon: '🛕', label: 'Besakih Temple' },
+      ],
+    },
+    {
+      name: 'Barcelona, Spain', center: [41.393, 2.163] as [number,number], zoom: 14,
+      photo: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=80&q=80&fit=crop',
+      scanned: 876, kept: 49,
+      spots: [
+        { lat: 41.4036, lng: 2.1744, icon: '⛪', label: 'Sagrada Família' },
+        { lat: 41.4145, lng: 2.1527, icon: '🌈', label: 'Park Güell' },
+        { lat: 41.3818, lng: 2.1734, icon: '🚶', label: 'La Rambla' },
+        { lat: 41.3833, lng: 2.1766, icon: '🏛️', label: 'Gothic Quarter' },
+        { lat: 41.3800, lng: 2.1926, icon: '🏖️', label: 'Barceloneta' },
+        { lat: 41.3751, lng: 2.1490, icon: '🎡', label: 'Montjuïc' },
+      ],
+    },
+    {
+      name: 'London, UK', center: [51.507, -0.110] as [number,number], zoom: 13,
+      photo: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=80&q=80&fit=crop',
+      scanned: 1342, kept: 76,
+      spots: [
+        { lat: 51.5007, lng: -0.1246, icon: '🕰️', label: 'Big Ben' },
+        { lat: 51.5081, lng: -0.0759, icon: '🏰', label: 'Tower of London' },
+        { lat: 51.5194, lng: -0.1270, icon: '🏛️', label: 'British Museum' },
+        { lat: 51.5014, lng: -0.1419, icon: '👑', label: 'Buckingham Palace' },
+        { lat: 51.5076, lng: -0.0994, icon: '🎨', label: 'Tate Modern' },
+        { lat: 51.5073, lng: -0.1657, icon: '🌳', label: 'Hyde Park' },
+      ],
+    },
+  ];
+
+  // Pick a random city once per page load
+  const city = CITIES[Math.floor(Math.random() * CITIES.length)];
+
+  // Pre-fill the city label
+  const cityLabelEl = document.getElementById('map-city-label');
+  if (cityLabelEl) cityLabelEl.textContent = city.name;
+
+  // Pre-fill chips
+  const chipsEl = document.getElementById('location-chips');
+  if (chipsEl) {
+    chipsEl.innerHTML = city.spots.map(s =>
+      `<span style="font-family:'Manrope',sans-serif;font-size:11px;font-weight:600;color:white;
+        background:rgba(255,122,89,0.16);border:1px solid rgba(255,122,89,0.32);
+        border-radius:20px;padding:3px 9px;">${s.label}</span>`
+    ).join('');
+  }
+
+  const observer = new IntersectionObserver(
+    async (entries) => {
+      if (!entries[0].isIntersecting) return;
+      observer.disconnect();
+
+      if (!document.getElementById('leaflet-css')) {
+        const link = document.createElement('link');
+        link.id = 'leaflet-css'; link.rel = 'stylesheet';
+        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(link);
+      }
+
+      const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+        import('gsap'),
+        import('gsap/ScrollTrigger'),
+        new Promise<void>((res) => {
+          if ((window as any).L) { res(); return; }
+          const s = document.createElement('script');
+          s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+          s.onload = () => res();
+          document.head.appendChild(s);
+        }),
+      ]);
+      gsap.registerPlugin(ScrollTrigger);
+
+      const L = (window as any).L;
+      const mapEl = document.getElementById('map')!;
+
+      const map = L.map(mapEl, {
+        zoomControl: false, attributionControl: false,
+        dragging: false, scrollWheelZoom: false,
+        doubleClickZoom: false, touchZoom: false,
+      }).setView([25, 20], 2);
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        subdomains: 'abcd', maxZoom: 19,
+      }).addTo(map);
+
+      setTimeout(() => map.invalidateSize(), 50);
+
+      const copyEl   = document.getElementById('map-copy');
+      const counterEl = document.getElementById('map-counter');
+      const scanEl   = document.getElementById('map-scan-count');
+
+      // Update counter values from city data
+      if (scanEl) scanEl.textContent = String(city.scanned);
+
+      function dropPins() {
+        // Route line
+        L.polyline(
+          city.spots.map(s => [s.lat, s.lng]),
+          { color: '#FF7A59', weight: 2, opacity: 0.5, dashArray: '6 8', className: 'animated-route' }
+        ).addTo(map);
+
+        // Pins
+        city.spots.forEach((spot, i) => {
+          const html = `
+            <div style="position:relative;width:44px;height:44px;">
+              <div class="pin-pulse"></div>
+              <div class="pin-pulse pin-pulse-2"></div>
+              <div style="
+                position:relative;z-index:2;width:44px;height:44px;border-radius:50%;
+                background:#0e1b42;border:2.5px solid #FF7A59;
+                display:flex;align-items:center;justify-content:center;font-size:20px;
+                box-shadow:0 4px 16px rgba(0,0,0,0.5);
+                transform:scale(0);opacity:0;
+              ">${spot.icon}</div>
+            </div>`;
+          const icon = L.divIcon({ html, iconSize: [44,44], iconAnchor: [22,22], className: '' });
+          const marker = L.marker([spot.lat, spot.lng], { icon }).addTo(map);
+          marker.bindTooltip(spot.label, {
+            permanent: false, direction: 'top', offset: [0,-28], className: 'wrangle-tooltip',
+          });
+          const el = marker.getElement()?.querySelector('div[style*="scale(0)"]') as HTMLElement | null;
+          if (el) gsap.to(el, { scale:1, opacity:1, duration:0.7, ease:'back.out(2)', delay: i * 0.14 });
+        });
+
+        // Chips appear
+        if (chipsEl) {
+          gsap.to(chipsEl, { opacity:1, duration:0.5, delay:1.2 });
+          gsap.from(chipsEl.querySelectorAll('span'), { opacity:0, y:6, duration:0.35, stagger:0.07, delay:1.2 });
+        }
+
+        // Counter
+        if (counterEl) {
+          const obj = { val: 0 };
+          gsap.to(obj, {
+            val: city.kept, duration: 2, ease: 'power2.out', delay: 0.4,
+            onUpdate: () => { counterEl.textContent = String(Math.round(obj.val)); },
+          });
+        }
+
+        // Photo card popup
+        setTimeout(() => {
+          const popup = document.createElement('div');
+          popup.style.cssText = `
+            position:absolute; bottom:100px; right:clamp(16px,5vw,64px); z-index:10;
+            background:#162550; border:1px solid rgba(255,255,255,0.12);
+            border-radius:14px; padding:10px; display:flex; gap:10px; align-items:center;
+            box-shadow:0 8px 32px rgba(0,0,0,0.5); opacity:0; transform:translateY(12px);
+            max-width:230px;
+          `;
+          popup.innerHTML = `
+            <img src="${city.photo}" style="width:50px;height:50px;border-radius:8px;object-fit:cover;flex-shrink:0;" alt="" />
+            <div>
+              <p style="font-family:'Sora',sans-serif;font-weight:700;font-size:13px;color:white;margin:0;">${city.name.split(',')[0]} Guide</p>
+              <p style="font-family:'Manrope',sans-serif;font-size:11px;color:#B0C4DE;margin:3px 0 0;">${city.spots.length} locations · ${city.kept} photos</p>
+              <div style="display:flex;align-items:center;gap:4px;margin-top:6px;">
+                <div style="width:14px;height:14px;background:white;border-radius:3px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                  <img src="/logo-w-blue.png" style="width:11px;height:11px;object-fit:contain;" alt="W" />
+                </div>
+                <span style="font-family:'Manrope',sans-serif;font-size:10px;color:rgba(176,196,222,0.7);">By Wrangle</span>
+              </div>
+            </div>`;
+          document.getElementById('map-container')!.appendChild(popup);
+          gsap.to(popup, { opacity:1, y:0, duration:0.6, ease:'back.out(1.4)' });
+        }, city.spots.length * 140 + 500);
+      }
+
+      // Set initial hidden state via GSAP (not inline style)
+      if (copyEl) gsap.set(copyEl, { opacity: 0, y: 28 });
+
+      ScrollTrigger.create({
+        trigger: '#map-chapter',
+        start: 'top 75%',
+        onEnter: () => {
+          if (copyEl) gsap.to(copyEl, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.2 });
+
+          map.flyTo(city.center, city.zoom, { duration: 2.4, easeLinearity: 0.25 });
+          map.once('moveend', dropPins);
+        },
+      });
+    },
+    { threshold: 0.05 }
+  );
+
+  observer.observe(mapSection);
+</script>
+
+<style is:global>
+  .wrangle-tooltip {
+    background: #162550 !important;
+    border: 1px solid rgba(255,122,89,0.4) !important;
+    color: white !important;
+    font-family: 'Manrope', sans-serif !important;
+    font-size: 11px !important; font-weight: 600 !important;
+    border-radius: 6px !important; padding: 3px 8px !important;
+    white-space: nowrap !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+  }
+  .leaflet-tooltip::before,
+  .leaflet-tooltip-top::before { display: none !important; }
+</style>

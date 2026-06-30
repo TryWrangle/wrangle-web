@@ -1,0 +1,353 @@
+---
+import WaitlistForm from '../ui/WaitlistForm.astro';
+import BlobBackground from '../ui/BlobBackground.astro';
+
+const waitlistCount = import.meta.env.PUBLIC_WAITLIST_COUNT || '2,400';
+
+const floatingPhotos = [
+  { emoji: '🗽', label: 'New York', top: '12%', left: '-8%', rotate: '-6deg', delay: '0s' },
+  { emoji: '🌮', label: 'Mexico City', top: '55%', left: '-12%', rotate: '4deg', delay: '0.3s' },
+  { emoji: '🍕', label: 'Rome, Italy', top: '80%', left: '2%', rotate: '-3deg', delay: '0.6s' },
+  { emoji: '🌊', label: 'Bali Coast', top: '8%', right: '-6%', rotate: '5deg', delay: '0.2s' },
+  { emoji: '🏔️', label: 'Swiss Alps', top: '60%', right: '-10%', rotate: '-4deg', delay: '0.5s' },
+  { emoji: '🌸', label: 'Kyoto, Japan', top: '82%', right: '0%', rotate: '3deg', delay: '0.8s' },
+];
+---
+
+<section
+  id="hero"
+  class="relative overflow-hidden"
+  style="background: var(--navy-900); min-height: 100vh;"
+>
+  <BlobBackground variant="dark" />
+  <!-- Background grid texture -->
+  <div style="
+    position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(75,123,236,0.04) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(75,123,236,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  "></div>
+
+  <!-- Gradient blobs -->
+  <div class="blob-coral" style="
+    position: absolute; width: 700px; height: 700px;
+    top: -200px; right: -100px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,122,89,0.22) 0%, transparent 65%);
+    pointer-events: none;
+  "></div>
+  <div class="blob-blue" style="
+    position: absolute; width: 600px; height: 600px;
+    bottom: -150px; left: -100px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(75,123,236,0.18) 0%, transparent 65%);
+    pointer-events: none;
+  "></div>
+
+  <!-- Main content -->
+  <div style="
+    max-width: 1200px; margin: 0 auto;
+    padding: 100px 40px 60px;
+    min-height: 100vh; display: flex; align-items: center;
+    gap: 60px;
+  ">
+
+    <!-- LEFT: Copy + form -->
+    <div style="flex: 1; min-width: 0; position: relative; z-index: 2;">
+
+      <!-- Animated badge -->
+      <div style="
+        display: inline-flex; align-items: center; gap: 8px;
+        background: rgba(255,122,89,0.12); border: 1px solid rgba(255,122,89,0.25);
+        border-radius: 99px; padding: 6px 14px; margin-bottom: 28px;
+      ">
+        <span style="width: 7px; height: 7px; border-radius: 50%; background: #FF7A59; display: inline-block; animation: pulse 2s ease-in-out infinite;"></span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: #FF7A59; letter-spacing: 0.06em; text-transform: uppercase;">Invite-only beta now open</span>
+      </div>
+
+      <h1 style="
+        font-family: 'Sora', sans-serif; font-weight: 800;
+        font-size: clamp(38px, 4.5vw, 62px);
+        color: white; line-height: 1.08; letter-spacing: -0.04em;
+        margin: 0 0 20px;
+      ">
+        Your camera roll<br/>
+        <span style="color: #FF7A59;">has been hiding</span><br/>
+        your travel stories.
+      </h1>
+
+      <p style="
+        font-family: 'Manrope', sans-serif; font-size: 18px;
+        color: #B0C4DE; line-height: 1.65; margin: 0 0 36px;
+        max-width: 460px;
+      ">
+        Wrangle reads your photo metadata and auto-builds a shareable travel guide — in under 10 minutes, no typing required.
+      </p>
+
+      <!-- Waitlist form -->
+      <WaitlistForm id="hero-waitlist" />
+
+      <!-- Social proof -->
+      <div style="display: flex; align-items: center; gap: 16px; margin-top: 20px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: -4px;">
+          {['🧑🏻', '👩🏽', '🧔🏼', '👩🏿', '👨🏻'].map((e, i) => (
+            <div style={`
+              width: 28px; height: 28px; border-radius: 50%;
+              background: rgba(45,74,140,0.8); border: 2px solid var(--navy-900);
+              display: flex; align-items: center; justify-content: center;
+              font-size: 14px;
+              margin-left: ${i > 0 ? '-8px' : '0'};
+              position: relative; z-index: ${5 - i};
+            `}>{e}</div>
+          ))}
+        </div>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #B0C4DE; margin: 0;">
+          🔥 <strong style="color: white;">{waitlistCount}</strong> travelers already waiting
+        </p>
+      </div>
+
+      <!-- Feature pills -->
+      <div style="display: flex; gap: 8px; margin-top: 28px; flex-wrap: wrap;">
+        {[
+          '📍 Auto location tags',
+          '✨ ML curation',
+          '🔗 Shareable link',
+          '📷 Camera roll only',
+        ].map(f => (
+          <span style="
+            font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 500;
+            color: #B0C4DE;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 99px; padding: 5px 12px;
+          ">{f}</span>
+        ))}
+      </div>
+    </div>
+
+    <!-- RIGHT: Phone mockup + floating photos -->
+    <div style="
+      flex: 0 0 auto; width: 360px;
+      position: relative; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+    " class="hero-phone-col">
+
+      <!-- Floating photo cards -->
+      {floatingPhotos.map(p => (
+        <div
+          class="floating-card"
+          style={`
+            position: absolute;
+            ${p.top ? `top: ${p.top};` : ''}
+            ${(p as any).left !== undefined ? `left: ${(p as any).left};` : ''}
+            ${(p as any).right !== undefined ? `right: ${(p as any).right};` : ''}
+            transform: rotate(${p.rotate});
+            animation: floatCard 4s ease-in-out infinite;
+            animation-delay: ${p.delay};
+            z-index: 5;
+          `}
+        >
+          <div style="
+            background: rgba(26,42,108,0.85);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px; padding: 10px 14px;
+            backdrop-filter: blur(12px);
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            white-space: nowrap;
+          ">
+            <span style="font-size: 20px;">{p.emoji}</span>
+            <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: white;">{p.label}</span>
+          </div>
+        </div>
+      ))}
+
+      <!-- Phone shell -->
+      <div style="
+        width: 260px; height: 520px;
+        background: #1c2540;
+        border-radius: 44px;
+        border: 1.5px solid rgba(255,255,255,0.22);
+        box-shadow:
+          0 0 0 6px rgba(255,255,255,0.04),
+          0 0 0 7px rgba(255,255,255,0.06),
+          0 40px 80px rgba(0,0,0,0.7),
+          0 0 60px rgba(255,122,89,0.08),
+          inset 0 1px 0 rgba(255,255,255,0.12);
+        position: relative; overflow: hidden;
+        transform: perspective(1000px) rotateY(-6deg) rotateX(2deg);
+      ">
+        <!-- Notch -->
+        <div style="
+          position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+          width: 80px; height: 22px; background: #000; border-radius: 11px; z-index: 10;
+        "></div>
+
+        <!-- Status bar -->
+        <div style="
+          position: absolute; top: 0; left: 0; right: 0; height: 50px;
+          background: linear-gradient(180deg, rgba(10,16,40,0.95) 0%, transparent 100%);
+          z-index: 5;
+        "></div>
+
+        <!-- Discover screen content -->
+        <div style="padding: 52px 12px 10px; height: 100%; display: flex; flex-direction: column; overflow: hidden; background: #0d1535;">
+
+          <!-- Header -->
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 9px;">
+            <h3 style="font-family: 'Sora', sans-serif; font-weight: 800; font-size: 16px; color: white; margin: 0; line-height: 1.2; letter-spacing: -0.03em;">Where are we<br/>going next?</h3>
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+          </div>
+
+          <!-- Search bar -->
+          <div style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.09); border-radius: 18px; padding: 6px 10px; display: flex; align-items: center; gap: 5px; margin-bottom: 10px; flex-shrink: 0;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span style="font-family: 'Manrope', sans-serif; font-size: 9px; color: rgba(255,255,255,0.3);">Search guides, cities, people...</span>
+          </div>
+
+          <!-- Friends' guides header -->
+          <p style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 10.5px; color: white; margin: 0 0 7px 0; flex-shrink: 0;">Friends' Published Guides</p>
+
+          <!-- Guide cards row -->
+          <div style="display: flex; gap: 7px; overflow: hidden; flex-shrink: 0; margin-bottom: 10px;">
+
+            <!-- Miami card -->
+            <div style="flex: 0 0 auto; width: 144px; height: 150px; border-radius: 10px; overflow: hidden; position: relative; background: linear-gradient(rgba(0,0,0,0.22), rgba(0,0,0,0.22)), url('https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?w=300&q=80&fit=crop') center/cover no-repeat;">
+              <!-- Stacked photo thumbnails -->
+              <div style="position: absolute; top: 7px; right: 7px; display: flex; flex-direction: column; gap: 3px; z-index: 3;">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=60&q=80&fit=crop" alt="" style="width:29px;height:29px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.35);object-fit:cover;display:block;" />
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=60&q=80&fit=crop" alt="" style="width:29px;height:29px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.35);object-fit:cover;display:block;" />
+                <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=60&q=80&fit=crop" alt="" style="width:29px;height:29px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.35);object-fit:cover;display:block;" />
+              </div>
+              <!-- Bookmark -->
+              <div style="position: absolute; top: 7px; right: 43px; z-index: 3; background: rgba(0,0,0,0.35); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="rgba(255,255,255,0.8)" stroke="none"><path d="M17 3H7c-1.1 0-2 .9-2 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+              </div>
+              <!-- +20 -->
+              <div style="position: absolute; bottom: 30px; right: 7px; font-family: 'Manrope', sans-serif; font-size: 8px; font-weight: 700; color: white; background: rgba(0,0,0,0.6); border-radius: 4px; padding: 1.5px 4px; z-index: 3;">+20</div>
+              <!-- Bottom info -->
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.88)); padding: 18px 8px 7px; z-index: 2;">
+                <p style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 14px; color: white; margin: 0; letter-spacing: -0.02em;">Miami</p>
+                <div style="display: flex; align-items: center; gap: 3px; margin-top: 2px;">
+                  <div style="width: 16px; height: 16px; background: white; border-radius: 3px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img src="/logo-w-blue.png" alt="W" style="width:12px;height:12px;object-fit:contain;display:block;" /></div>
+                  <span style="font-family: 'Manrope', sans-serif; font-size: 8px; color: rgba(255,255,255,0.6);">By Wrangle</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Paris card (partially visible) -->
+            <div style="flex: 0 0 auto; width: 80px; height: 150px; border-radius: 10px; overflow: hidden; position: relative; background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1431274172761-fcdab704a0ef?w=200&q=80&fit=crop') center/cover no-repeat;">
+              <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.88)); padding: 18px 8px 7px;">
+                <p style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 14px; color: white; margin: 0; letter-spacing: -0.02em;">Paris</p>
+                <div style="display: flex; align-items: center; gap: 3px; margin-top: 2px;">
+                  <div style="width: 16px; height: 16px; background: white; border-radius: 3px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img src="/logo-w-blue.png" alt="W" style="width:12px;height:12px;object-fit:contain;display:block;" /></div>
+                  <span style="font-family: 'Manrope', sans-serif; font-size: 8px; color: rgba(255,255,255,0.6);">By W…</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Featured section header -->
+          <p style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 10.5px; color: white; margin: 0 0 7px 0; flex-shrink: 0;">Featured Community Guides</p>
+
+          <!-- Featured large card (fills remaining space) -->
+          <div style="border-radius: 10px; overflow: hidden; position: relative; flex: 1; min-height: 0; background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=350&q=80&fit=crop') center/cover no-repeat;">
+            <div style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 3px; z-index: 3;">
+              <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=70&q=80&fit=crop" alt="" style="width:32px;height:32px;border-radius:6px;border:1.5px solid rgba(255,255,255,0.35);object-fit:cover;display:block;" />
+              <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=70&q=80&fit=crop" alt="" style="width:32px;height:32px;border-radius:6px;border:1.5px solid rgba(255,255,255,0.35);object-fit:cover;display:block;" />
+            </div>
+            <div style="position: absolute; bottom: 28px; right: 8px; font-family: 'Manrope', sans-serif; font-size: 8px; font-weight: 700; color: white; background: rgba(0,0,0,0.6); border-radius: 4px; padding: 1.5px 4px; z-index: 3;">+20</div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.88)); padding: 18px 10px 7px; z-index: 2;">
+              <p style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 13px; color: white; margin: 0;">Miami</p>
+              <div style="display: flex; align-items: center; gap: 3px; margin-top: 2px;">
+                <div style="width: 16px; height: 16px; background: white; border-radius: 3px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;"><img src="/logo-w-blue.png" alt="W" style="width:12px;height:12px;object-fit:contain;display:block;" /></div>
+                <span style="font-family: 'Manrope', sans-serif; font-size: 8px; color: rgba(255,255,255,0.6);">By Wrangle</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom nav pill -->
+          <div style="margin-top: 8px; flex-shrink: 0; background: rgba(8,14,38,0.97); border-radius: 20px; padding: 7px 18px 6px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255,255,255,0.07);">
+            <div style="opacity: 0.4;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF7A59" stroke="none"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+              <div style="width: 4px; height: 4px; border-radius: 50%; background: #FF7A59;"></div>
+            </div>
+            <div style="opacity: 0.4;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            </div>
+            <div style="opacity: 0.4;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M17 3H7c-1.1 0-2 .9-2 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+            </div>
+            <div style="opacity: 0.4;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Screen glare -->
+        <div style="
+          position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 50%);
+          pointer-events: none; border-radius: 44px;
+        "></div>
+      </div>
+
+      <!-- Glow under phone -->
+      <div style="
+        position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%);
+        width: 200px; height: 40px;
+        background: rgba(255,122,89,0.2);
+        filter: blur(20px); border-radius: 50%;
+        pointer-events: none;
+      "></div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div
+    id="scroll-indicator"
+    style="
+      position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      transition: opacity 0.3s ease;
+    "
+  >
+    <span style="font-family: 'Manrope', sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(176,196,222,0.4);">Scroll</span>
+    <div style="
+      width: 16px; height: 30px;
+      border: 1.5px solid rgba(255,255,255,0.25); border-radius: 99px;
+      display: flex; align-items: flex-start; justify-content: center; padding-top: 5px;
+    ">
+      <div class="scroll-dot" style="width: 5px; height: 5px; background: rgba(255,255,255,0.6); border-radius: 50%;"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  @keyframes floatCard {
+    0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+    50% { transform: translateY(-8px) rotate(var(--rot, 0deg)); }
+  }
+
+  @media (max-width: 768px) {
+    .hero-phone-col { display: none !important; }
+  }
+</style>
+
+<script>
+  const indicator = document.getElementById('scroll-indicator');
+  if (indicator) {
+    window.addEventListener('scroll', () => {
+      indicator.style.opacity = String(Math.max(0, 1 - window.scrollY / 80));
+    }, { passive: true });
+  }
+</script>

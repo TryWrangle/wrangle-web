@@ -1,0 +1,130 @@
+---
+const navLinks = [
+  { href: '/blog', label: 'Blog' },
+  { href: '/about', label: 'About' },
+  { href: '/press', label: 'Press' },
+];
+---
+
+<nav
+  id="main-nav"
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+  style="background: transparent;"
+>
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-2 no-underline">
+      <div class="w-7 h-7 flex items-center justify-center overflow-hidden" style="background: white; border-radius: 7px;">
+        <img src="/logo-w-blue.png" alt="Wrangle" style="width: 20px; height: 20px; object-fit: contain; display: block;" />
+      </div>
+      <span class="font-display font-bold text-lg text-white tracking-tight">Wrangle</span>
+    </a>
+
+    <!-- Desktop links -->
+    <div class="hidden md:flex items-center gap-8">
+      {navLinks.map(link => (
+        <a
+          href={link.href}
+          class="font-body font-medium text-sm text-steel hover:text-white transition-colors duration-200 no-underline"
+        >
+          {link.label}
+        </a>
+      ))}
+      <a
+        href="/#final-cta"
+        class="btn-magnetic inline-flex items-center bg-coral text-white font-display font-semibold text-xs px-4 py-2 rounded-full hover:opacity-90 transition-opacity no-underline"
+        style="letter-spacing: 0.01em;"
+      >
+        Get early access
+      </a>
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button
+      id="nav-hamburger"
+      class="md:hidden flex flex-col gap-1.5 p-2"
+      aria-label="Open menu"
+    >
+      <span class="block w-5 h-0.5 bg-white transition-all duration-300" id="ham-line1"></span>
+      <span class="block w-5 h-0.5 bg-white transition-all duration-300" id="ham-line2"></span>
+      <span class="block w-5 h-0.5 bg-white transition-all duration-300" id="ham-line3"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile drawer overlay -->
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-40 flex-col items-center justify-center hidden"
+  style="background: var(--navy-900);"
+>
+  <div class="flex flex-col items-center gap-6 text-center">
+    {navLinks.map(link => (
+      <a
+        href={link.href}
+        class="font-body font-medium text-2xl text-white no-underline nav-mobile-link"
+      >
+        {link.label}
+      </a>
+    ))}
+    <a
+      href="/#final-cta"
+      class="mt-4 btn-magnetic inline-flex items-center bg-coral text-white font-display font-semibold text-sm px-8 py-3 rounded-full no-underline nav-mobile-link"
+    >
+      Get early access
+    </a>
+  </div>
+</div>
+
+<script>
+  const nav = document.getElementById('main-nav')!;
+  const hamburger = document.getElementById('nav-hamburger')!;
+  const mobileMenu = document.getElementById('mobile-menu')!;
+  const line1 = document.getElementById('ham-line1')!;
+  const line2 = document.getElementById('ham-line2')!;
+  const line3 = document.getElementById('ham-line3')!;
+
+  // Scroll state
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      nav.style.background = 'rgba(14, 27, 66, 0.9)';
+      nav.style.backdropFilter = 'blur(12px)';
+      nav.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+    } else {
+      nav.style.background = 'transparent';
+      nav.style.backdropFilter = 'none';
+      nav.style.borderBottom = 'none';
+    }
+  });
+
+  // Mobile menu toggle
+  let isOpen = false;
+  hamburger.addEventListener('click', () => {
+    isOpen = !isOpen;
+    if (isOpen) {
+      mobileMenu.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      line1.style.transform = 'translateY(8px) rotate(45deg)';
+      line2.style.opacity = '0';
+      line3.style.transform = 'translateY(-8px) rotate(-45deg)';
+    } else {
+      mobileMenu.style.display = 'none';
+      document.body.style.overflow = '';
+      line1.style.transform = '';
+      line2.style.opacity = '';
+      line3.style.transform = '';
+    }
+  });
+
+  // Close on mobile link click
+  document.querySelectorAll('.nav-mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+      isOpen = false;
+      mobileMenu.style.display = 'none';
+      document.body.style.overflow = '';
+      line1.style.transform = '';
+      line2.style.opacity = '';
+      line3.style.transform = '';
+    });
+  });
+</script>

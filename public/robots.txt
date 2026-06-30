@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://getwrangle.app/sitemap-index.xml

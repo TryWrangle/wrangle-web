@@ -1,0 +1,158 @@
+---
+interface Props {
+  variant?: 'dark' | 'coral';
+}
+const { variant = 'dark' } = Astro.props;
+---
+
+<!-- W-shaped ambient blobs: peaks at left/center/right, valleys between -->
+<div class={`wb-container wb-${variant}`} aria-hidden="true">
+  <div class="wb wb-1"></div>
+  <div class="wb wb-2"></div>
+  <div class="wb wb-3"></div>
+  <div class="wb wb-4"></div>
+  <div class="wb wb-5"></div>
+</div>
+
+<style>
+  .wb-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wb {
+    position: absolute;
+    border-radius: 50%;
+    will-change: transform;
+  }
+
+  /* ── dark variant (coral + blue on navy) ── */
+
+  /* W left peak */
+  .wb-dark .wb-1 {
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, #FF7A59 0%, transparent 70%);
+    top: -200px; left: -120px;
+    opacity: 0.28;
+    filter: blur(80px);
+    animation: wb-float-1 26s ease-in-out infinite alternate;
+  }
+  /* W left valley */
+  .wb-dark .wb-2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #4B7BEC 0%, transparent 70%);
+    top: 35%; left: 10%;
+    opacity: 0.22;
+    filter: blur(90px);
+    animation: wb-float-2 32s ease-in-out infinite alternate;
+  }
+  /* W center peak */
+  .wb-dark .wb-3 {
+    width: 340px; height: 340px;
+    background: radial-gradient(circle, #FF7A59 0%, transparent 70%);
+    top: -130px; left: calc(50% - 170px);
+    opacity: 0.18;
+    filter: blur(100px);
+    animation: wb-float-3 22s ease-in-out infinite alternate;
+  }
+  /* W right valley */
+  .wb-dark .wb-4 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #2D4A8C 0%, transparent 70%);
+    top: 35%; right: 10%;
+    opacity: 0.22;
+    filter: blur(90px);
+    animation: wb-float-4 28s ease-in-out infinite alternate;
+  }
+  /* W right peak */
+  .wb-dark .wb-5 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #FF7A59 0%, transparent 70%);
+    top: -200px; right: -120px;
+    opacity: 0.25;
+    filter: blur(80px);
+    animation: wb-float-5 24s ease-in-out infinite alternate;
+  }
+
+  /* ── coral variant (deep navy on coral) ── */
+
+  .wb-coral .wb-1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #1A2A6C 0%, transparent 70%);
+    top: -200px; left: -100px;
+    opacity: 0.4;
+    filter: blur(80px);
+    animation: wb-float-1 26s ease-in-out infinite alternate;
+  }
+  .wb-coral .wb-2 {
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, #0E1B42 0%, transparent 70%);
+    top: 25%; left: 8%;
+    opacity: 0.32;
+    filter: blur(90px);
+    animation: wb-float-2 32s ease-in-out infinite alternate;
+  }
+  .wb-coral .wb-3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, #2D4A8C 0%, transparent 70%);
+    top: -100px; left: calc(50% - 150px);
+    opacity: 0.36;
+    filter: blur(100px);
+    animation: wb-float-3 22s ease-in-out infinite alternate;
+  }
+  .wb-coral .wb-4 {
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, #0E1B42 0%, transparent 70%);
+    top: 25%; right: 8%;
+    opacity: 0.32;
+    filter: blur(90px);
+    animation: wb-float-4 28s ease-in-out infinite alternate;
+  }
+  .wb-coral .wb-5 {
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, #1A2A6C 0%, transparent 70%);
+    top: -200px; right: -100px;
+    opacity: 0.38;
+    filter: blur(80px);
+    animation: wb-float-5 24s ease-in-out infinite alternate;
+  }
+
+  /* ── Keyframes: each blob drifts in a different direction ── */
+  @keyframes wb-float-1 {
+    0%   { transform: translate(0, 0) scale(1); }
+    40%  { transform: translate(55px, 90px) scale(1.12); }
+    70%  { transform: translate(20px, 40px) scale(0.93); }
+    100% { transform: translate(80px, 130px) scale(1.07); }
+  }
+  @keyframes wb-float-2 {
+    0%   { transform: translate(0, 0) scale(1); }
+    30%  { transform: translate(-35px, -55px) scale(1.14); }
+    60%  { transform: translate(45px, 25px) scale(0.9); }
+    100% { transform: translate(-25px, -85px) scale(1.06); }
+  }
+  @keyframes wb-float-3 {
+    0%   { transform: translate(0, 0) scale(1); }
+    45%  { transform: translate(-25px, 70px) scale(1.18); }
+    75%  { transform: translate(35px, 20px) scale(0.88); }
+    100% { transform: translate(15px, 100px) scale(1.12); }
+  }
+  @keyframes wb-float-4 {
+    0%   { transform: translate(0, 0) scale(1); }
+    35%  { transform: translate(45px, -45px) scale(1.1); }
+    65%  { transform: translate(-35px, 25px) scale(0.92); }
+    100% { transform: translate(30px, -70px) scale(1.08); }
+  }
+  @keyframes wb-float-5 {
+    0%   { transform: translate(0, 0) scale(1); }
+    30%  { transform: translate(-65px, 55px) scale(1.13); }
+    60%  { transform: translate(-20px, 20px) scale(0.95); }
+    100% { transform: translate(-90px, 110px) scale(1.09); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wb { animation: none !important; }
+  }
+</style>

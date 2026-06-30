@@ -31,6 +31,9 @@ jobs:
         run: npm run build
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          PUBLIC_FORMSPREE_ID: ${{ secrets.PUBLIC_FORMSPREE_ID }}
+          PUBLIC_WAITLIST_COUNT: ${{ secrets.PUBLIC_WAITLIST_COUNT }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/layout/Nav.astro';
+import Footer from '../components/layout/Footer.astro';
+---
+
+<BaseLayout
+  title="Press — Wrangle"
+  description="Press resources, brand assets, and coverage for Wrangle."
+>
+  <Nav />
+
+  <main style="background: var(--navy-900); padding-top: 80px; min-height: 100vh;">
+    <div style="max-width: 1100px; margin: 0 auto; padding: 60px 24px 100px;">
+
+      <!-- Header -->
+      <div style="margin-bottom: 60px;">
+        <h1 style="font-family: 'Sora', sans-serif; font-weight: 800; font-size: clamp(36px, 5vw, 48px); color: white; letter-spacing: -0.03em; margin: 0 0 16px;">Wrangle in the news</h1>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 18px; color: #B0C4DE;">Resources for journalists and media. We respond within 24 hours.</p>
+      </div>
+
+      <!-- Coverage grid -->
+      <section style="margin-bottom: 80px;">
+        <h2 style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 22px; color: white; margin: 0 0 24px;">Coverage</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+          {[
+            { outlet: 'TechCrunch', headline: 'Wrangle wants to turn your camera roll into the travel guide app your friends actually use', date: 'May 2026', emoji: '📰' },
+            { outlet: 'Product Hunt', headline: '#2 Product of the Day — Wrangle: Travel guides from your camera roll', date: 'April 2026', emoji: '🏆' },
+            { outlet: 'The Verge', headline: 'This app reads your EXIF data to build shareable travel itineraries. It works.', date: 'March 2026', emoji: '🔍' },
+          ].map(item => (
+            <div style="background: var(--navy-800); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 24px;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                <span style="font-size: 24px;">{item.emoji}</span>
+                <span style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 14px; color: white;">{item.outlet}</span>
+              </div>
+              <p style="font-family: 'Manrope', sans-serif; font-size: 15px; color: #B0C4DE; line-height: 1.5; margin: 0 0 12px;">{item.headline}</p>
+              <p style="font-family: 'Manrope', sans-serif; font-size: 12px; color: rgba(176,196,222,0.5);">{item.date}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Press kit download -->
+      <section style="margin-bottom: 80px; background: rgba(255,122,89,0.08); border: 1px solid rgba(255,122,89,0.2); border-radius: 16px; padding: 32px;">
+        <h2 style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 22px; color: white; margin: 0 0 8px;">Press kit</h2>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 15px; color: #B0C4DE; margin: 0 0 20px;">Logos, screenshots, and product photos in one download.</p>
+        <a
+          href="/press-kit.zip"
+          style="display: inline-flex; align-items: center; gap: 8px; background: #FF7A59; color: white; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 14px; padding: 12px 24px; border-radius: 10px; text-decoration: none;"
+        >
+          ↓ Download press kit (ZIP)
+        </a>
+      </section>
+
+      <!-- Brand assets -->
+      <section style="margin-bottom: 80px;">
+        <h2 style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 22px; color: white; margin: 0 0 24px;">Brand assets</h2>
+
+        <!-- Colors -->
+        <h3 style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #B0C4DE; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 16px;">Brand colors</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 40px;">
+          {[
+            { name: 'Coral', hex: '#FF7A59', bg: '#FF7A59', text: 'white' },
+            { name: 'Navy 900', hex: '#0E1B42', bg: '#0E1B42', text: 'white', border: true },
+            { name: 'Navy 800', hex: '#1A2A6C', bg: '#1A2A6C', text: 'white' },
+            { name: 'Steel', hex: '#B0C4DE', bg: '#B0C4DE', text: '#0E1B42' },
+          ].map(c => (
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+              <div style={`width: 64px; height: 64px; border-radius: 50%; background: ${c.bg}; ${c.border ? 'border: 2px solid rgba(255,255,255,0.2);' : ''}`}></div>
+              <p style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; color: white; margin: 0;">{c.name}</p>
+              <p style="font-family: 'Manrope', sans-serif; font-size: 11px; color: #B0C4DE; margin: 0;">{c.hex}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Logo variants -->
+        <h3 style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #B0C4DE; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 16px;">Logo variants</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+          {[
+            { label: 'Wordmark (dark)', bg: 'var(--navy-800)' },
+            { label: 'Wordmark (light)', bg: '#F0F4F8' },
+            { label: 'Mark only', bg: 'var(--navy-700)' },
+          ].map(v => (
+            <div style={`background: ${v.bg}; border-radius: 12px; padding: 24px 32px; display: flex; flex-direction: column; align-items: center; gap: 16px; border: 1px solid rgba(255,255,255,0.08); min-width: 200px;`}>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 28px; height: 28px; background: #FF7A59; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-weight: 900; font-size: 14px; color: white;">W</div>
+                <span style={`font-family: 'Sora', sans-serif; font-weight: 700; font-size: 18px; color: ${v.bg === '#F0F4F8' ? '#0E1B42' : 'white'};`}>Wrangle</span>
+              </div>
+              <a href="#" style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #FF7A59; text-decoration: none;">Download PNG</a>
+              <p style="font-family: 'Manrope', sans-serif; font-size: 11px; color: rgba(176,196,222,0.5); margin: 0;">{v.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Boilerplate -->
+      <section style="margin-bottom: 80px;">
+        <h2 style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 22px; color: white; margin: 0 0 12px;">Official boilerplate</h2>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #B0C4DE; margin: 0 0 20px;">For use in press coverage, product listings, and app store descriptions.</p>
+        <div style="position: relative;">
+          <pre
+            id="boilerplate-text"
+            style="
+              background: var(--navy-800);
+              border: 1px solid rgba(255,255,255,0.08);
+              border-radius: 12px;
+              padding: 24px;
+              font-family: 'Manrope', sans-serif;
+              font-size: 14px;
+              color: #B0C4DE;
+              line-height: 1.7;
+              white-space: pre-wrap;
+              margin: 0;
+            "
+          >Wrangle is a mobile app that turns travel photos into shareable micro-guides using ML-powered curation. The app reads EXIF metadata — GPS coordinates, timestamps, and camera data — from photos already in your camera roll to automatically group, sequence, and curate your best shots into a beautiful guide your friends can open from a link, no app required. No live GPS tracking. No manual sorting. No typing. Just your photos, organized. Wrangle is currently in invite-only beta, available on iOS and Android. Headquartered in San Francisco, CA.</pre>
+          <button
+            id="copy-btn"
+            onclick="navigator.clipboard.writeText(document.getElementById('boilerplate-text').textContent).then(() => { this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy text', 2000); })"
+            style="
+              position: absolute; top: 16px; right: 16px;
+              background: rgba(255,255,255,0.08);
+              border: 1px solid rgba(255,255,255,0.12);
+              color: white; border-radius: 8px;
+              padding: 6px 14px;
+              font-family: 'Manrope', sans-serif;
+              font-size: 12px; cursor: pointer;
+            "
+          >
+            Copy text
+          </button>
+        </div>
+      </section>
+
+      <!-- Press contact -->
+      <section>
+        <h2 style="font-family: 'Sora', sans-serif; font-weight: 700; font-size: 22px; color: white; margin: 0 0 16px;">Press contact</h2>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 16px; color: #B0C4DE; margin: 0 0 8px;">
+          <strong style="color: white;">Wrangle Communications Team</strong>
+        </p>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 16px; color: #B0C4DE; margin: 0 0 8px;">
+          <a href="mailto:press@getwrangle.app" style="color: #FF7A59;">press@getwrangle.app</a>
+        </p>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 14px; color: rgba(176,196,222,0.5);">We respond within 24 hours.</p>
+      </section>
+
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

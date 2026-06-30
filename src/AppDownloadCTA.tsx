@@ -25,7 +25,7 @@ export default function AppDownloadCTA({ guideId }: Props) {
             letterSpacing: '-0.01em',
           }}
         >
-          Open in Wrangle
+          See full guide in Wrangle
         </button>
       )}
       <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, margin: '12px 0 10px', textAlign: 'center' }}>
