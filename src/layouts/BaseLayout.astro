@@ -6,15 +6,18 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  ogType?: string;
 }
 
 const {
   title,
   description = 'Wrangle turns your travel photos into shareable micro-guides using ML-powered curation. No live GPS. No typing. Just your camera roll.',
-  ogImage = '/og-image.png',
+  ogImage = '/logo-w.png',
+  ogType = 'website',
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://getwrangle.app');
+const siteURL = 'https://trywrangle.com';
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteURL);
 ---
 
 <!doctype html>
@@ -45,7 +48,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://getwrang
     <meta property="og:image" content={new URL(ogImage, canonicalURL).href} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:locale" content="en_US" />
 
@@ -57,18 +60,43 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://getwrang
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(ogImage, canonicalURL).href} />
 
-    <!-- Structured data -->
+    <!-- Structured data: WebSite + Organization + SoftwareApplication (global) -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Wrangle",
-      "description": description,
-      "url": "https://getwrangle.app",
-      "applicationCategory": "TravelApplication",
-      "operatingSystem": "iOS",
-      "offers": { "@type": "Offer", "price": "0" },
-      "publisher": { "@type": "Organization", "name": "Wrangle", "url": "https://getwrangle.app" }
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "name": "Wrangle",
+          "url": siteURL,
+          "description": "Turn your travel photos into shareable travel guides"
+        },
+        {
+          "@type": "Organization",
+          "name": "Wrangle",
+          "url": siteURL,
+          "logo": {
+            "@type": "ImageObject",
+            "url": `${siteURL}/logo-w.png`
+          },
+          "sameAs": [
+            "https://twitter.com/getwrangle",
+            "https://www.instagram.com/getwrangle"
+          ]
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Wrangle",
+          "description": description,
+          "url": siteURL,
+          "applicationCategory": "TravelApplication",
+          "operatingSystem": "iOS, Android",
+          "offers": { "@type": "Offer", "price": "0" },
+          "publisher": { "@type": "Organization", "name": "Wrangle", "url": siteURL }
+        }
+      ]
     })} />
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
