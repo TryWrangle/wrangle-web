@@ -3,13 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <script>
-      // GitHub Pages SPA routing: store the full path in sessionStorage and
-      // redirect to the root so index.html can restore it via the History API.
-      var path = window.location.pathname;
-      var search = window.location.search;
-      var hash = window.location.hash;
-      sessionStorage.setItem('spa_redirect', path + search + hash);
-      window.location.replace('/');
+      // Guide links (/g/<slug>) are all served from one pre-built shell
+      // (/g/_/index.html) that reads the real slug from the URL at runtime.
+      // GitHub Pages 404s any slug other than "_", landing here — load that
+      // shell's markup in place so the address bar (and the slug it carries)
+      // is never touched.
+      if (window.location.pathname.indexOf('/g/') === 0) {
+        fetch('/g/_/index.html')
+          .then(function (res) { return res.text(); })
+          .then(function (html) {
+            document.open();
+            document.write(html);
+            document.close();
+          });
+      } else {
+        // GitHub Pages SPA routing: store the full path in sessionStorage and
+        // redirect to the root so index.html can restore it via the History API.
+        var path = window.location.pathname;
+        var search = window.location.search;
+        var hash = window.location.hash;
+        sessionStorage.setItem('spa_redirect', path + search + hash);
+        window.location.replace('/');
+      }
     </script>
   </head>
   <body></body>
